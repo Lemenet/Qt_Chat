@@ -15,7 +15,7 @@ Client::Client(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
-	ui.lineEdit->setText("192.168.0.125");
+	ui.lineEdit->setText("127.0.0.1");
 	ui.lineEdit_2->setText("8888");
 	
 	connect(ui.pushButton, SIGNAL(clicked()), this, SLOT(SlotStartConnect()));
@@ -62,7 +62,7 @@ void Client::SlotSendMessage()
 
 	msg_.SetBodyLength(buf.size());
 	memcpy(msg_.body(), buf.data(), buf.size());
-	msg_.SetBodyLength(buf.size());
+	//msg_.SetBodyLength(buf.size());
 	msg_.EncodeHeader();
 	client->Send(msg_);
 }
@@ -77,7 +77,7 @@ void Client::HandlePackage()
 
 		char szText[ChatMessage::MAX_BODY_LENGTH + 1] = { 0 };
 
-		memcpy(szText, msg.body(), msg.length());
+		memcpy(szText, msg.body(), msg.bodyLength());
 
 		ui.textEdit->append(QString::fromLocal8Bit(szText));
 	}
@@ -106,6 +106,8 @@ void Client::SlotStartConnect()
 	);
 
 	t->detach();
+
+	QMessageBox::critical(NULL, QString::fromLocal8Bit("Á¬½Ó"), ui.lineEdit->text(), QMessageBox::Ok);
 
 	//Do something
 	//char line[ChatMessage::MAX_BODY_LENGTH + 1];
